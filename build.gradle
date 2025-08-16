@@ -1,0 +1,53 @@
+
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.3'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.boot:spring-boot-dependencies:3.5.3"
+	}
+}
+
+group = 'com.kyj.fmk'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven {
+		url = uri("http://192.168.56.1:9090/repository/bottle-story/")
+		allowInsecureProtocol = true // HTTP 사용 시 필수
+		credentials {
+			username = "admin"
+			password = "1234"
+		}
+	}
+}
+configurations.all {
+	resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+dependencies {
+	dependencies {
+		implementation 'com.kyj.fmk:bottle-security-dev:0.0.1-SNAPSHOT'
+		annotationProcessor 'org.projectlombok:lombok'
+	}
+
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
