@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kyj.fmk.mapper.BottleMapper">
+
+    <insert id="insertBtlLtr" parameterType="ReqBottleLtrDTO" useGeneratedKeys="true" keyProperty="btlLtrNo">
+        INSERT INTO BTL_LTR
+        (
+          BTL_TITLE
+        , BTL_CONTENT
+        , REG_SEQ_ID
+        , UPD_SEQ_ID
+        , START_LAT
+        , START_LOT
+        , BTL_STATUS_CODE
+        )
+        VALUES
+        (
+          #{title}
+        , #{content}
+        , #{usrSeqId}
+        , #{usrSeqId}
+        , #{lat}
+        , #{lot}
+        , 'PROGRESS'
+        )
+    </insert>
+</mapper>
