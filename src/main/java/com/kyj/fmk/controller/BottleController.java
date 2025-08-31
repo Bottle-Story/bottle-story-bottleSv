@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
 /**
  * 2025-08-31
  * 유리병 편지 컨트롤러
@@ -37,6 +40,8 @@ public class BottleController {
 
         String usrSeqId = String.valueOf(customOAuth2User.getUsrSeqId());
         reqBottleLtrDTO.setUsrSeqId(usrSeqId);
+
+
         return bottleService.insertBtlLtr(reqBottleLtrDTO);
     }
 }
