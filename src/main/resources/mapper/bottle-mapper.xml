@@ -25,4 +25,26 @@
         , 'PROGRESS'
         )
     </insert>
+    <select id="selectExcludeBtlList" parameterType="java.util.List" resultType="String">
+        SELECT BTL_LTR_NO
+          FROM BTL_LTR
+         WHERE 1=1
+           AND REG_SEQ_ID = #{usrSeqId}
+           AND BTL_LTR_NO IN
+            <foreach collection="returnList" item="btlNo" open="(" separator="," close=")">
+                #{btlNo}
+            </foreach>
+
+        UNION ALL
+
+        SELECT BTL_LTR_NO
+          FROM BTL_LTR
+         WHERE 1=1
+           AND REG_SEQ_ID <![CDATA[<>]]> #{usrSeqId}
+           AND BTL_LTR_NO IN
+            <foreach collection="returnList" item="btlNo" open="(" separator="," close=")">
+                #{btlNo}
+            </foreach>
+           AND BTL_LTR.BTL_STATUS_CODE ='DESTROY'
+    </select>
 </mapper>
