@@ -3,6 +3,8 @@ package com.kyj.fmk.service;
 import com.kyj.fmk.core.model.dto.ResApiDTO;
 import com.kyj.fmk.core.redis.RedisKey;
 import com.kyj.fmk.model.ReqBottleLtrDTO;
+import com.kyj.fmk.model.ReqBottleLtrDetialDTO;
+import com.kyj.fmk.model.ResBottleLtrDetail;
 import com.kyj.fmk.model.kafka.KafkaBtlFlowDTO;
 import com.kyj.fmk.queue.KafkaBtlPublishService;
 import com.kyj.fmk.repository.BottleRepository;
@@ -68,6 +70,18 @@ public class BottleServiceImpl implements BottleService{
 
         return returnList;
 
+    }
+
+    /**
+     * 유리병 조회 상세
+     * @param reqBottleLtrDetialDTO
+     * @return
+     */
+    @Override
+    public ResponseEntity<ResApiDTO<ResBottleLtrDetail>> selectBtlLtrDetail(ReqBottleLtrDetialDTO reqBottleLtrDetialDTO) {
+        ResBottleLtrDetail resBottleLtrDetail = bottleRepository.selectBtlLtrDetail(reqBottleLtrDetialDTO);
+        return ResponseEntity
+                .ok(new ResApiDTO<ResBottleLtrDetail>(resBottleLtrDetail));
     }
 
     /**

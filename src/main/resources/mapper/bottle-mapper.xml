@@ -46,5 +46,29 @@
                 #{btlNo}
             </foreach>
            AND BTL_LTR.BTL_STATUS_CODE ='DESTROY'
+
+        UNION ALL
+
+        SELECT BTL_LTR.BTL_LTR_NO
+          FROM BTL_LTR BTL_LTR
+          JOIN BTL_LTR_MEM_MPNG BLMM
+            ON BLMM.READ_SEQ_ID = #{usrSeqId}
+           AND BTL_LTR.BTL_LTR_NO    = BLMM.BTL_LTR_NO
+         WHERE 1=1
+        AND BTL_LTR.BTL_LTR_NO IN
+        <foreach collection="returnList" item="btlNo" open="(" separator="," close=")">
+            #{btlNo}
+        </foreach>
+        AND BTL_LTR.BTL_STATUS_CODE <![CDATA[<>]]> 'DESTROY'
+    </select>
+
+    <select id="selectBtlLtrDetail" parameterType="ReqBottleLtrDetialDTO" resultType="ResBottleLtrDetail">
+        SELECT
+               BTL_LTR_NO
+             , BTL_TITLE   AS TITLE
+             , BTL_CONTENT AS CONTENT
+          FROM BTL_LTR
+         WHERE 1=1
+           AND BTL_LTR_NO = #{btlLtrNo}
     </select>
 </mapper>

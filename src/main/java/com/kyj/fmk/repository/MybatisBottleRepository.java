@@ -2,6 +2,8 @@ package com.kyj.fmk.repository;
 
 import com.kyj.fmk.mapper.BottleMapper;
 import com.kyj.fmk.model.ReqBottleLtrDTO;
+import com.kyj.fmk.model.ReqBottleLtrDetialDTO;
+import com.kyj.fmk.model.ResBottleLtrDetail;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +19,16 @@ import java.util.List;
 public class MybatisBottleRepository implements BottleRepository{
 
     private final BottleMapper bottleMapper;
+
+    /**
+     * 유리병 편지 상세 조회
+     * @param reqBottleLtrDetialDTO
+     * @return
+     */
+    @Override
+    public ResBottleLtrDetail selectBtlLtrDetail(ReqBottleLtrDetialDTO reqBottleLtrDetialDTO) {
+        return bottleMapper.selectBtlLtrDetail(reqBottleLtrDetialDTO);
+    }
 
     /**
      * 회원기준 유리병 편지를 조회할때 자신을 제외 등 제외 리스트
