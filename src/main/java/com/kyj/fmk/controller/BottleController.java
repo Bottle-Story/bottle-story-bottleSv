@@ -4,6 +4,7 @@ import com.kyj.fmk.core.model.dto.ResApiDTO;
 import com.kyj.fmk.model.ReqBottleLtrDTO;
 import com.kyj.fmk.model.ReqBottleLtrDetialDTO;
 import com.kyj.fmk.model.ResBottleLtrDetail;
+import com.kyj.fmk.model.kafka.ReqBtlLtrMemMpng;
 import com.kyj.fmk.sec.dto.oauth2.CustomOAuth2User;
 import com.kyj.fmk.service.BottleService;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,22 @@ public class BottleController {
         return bottleService.insertBtlLtr(reqBottleLtrDTO);
     }
 
+    /**
+     * 유리병 편지 그냥 흘려보내기 컨트롤러
+     * @param reqBtlLtrMemMpng
+     * @param customOAuth2User
+     * @return
+     */
+    @PostMapping("/justFlow")
+    public ResponseEntity<ResApiDTO<?>> bottleLtrInsert(@RequestBody ReqBtlLtrMemMpng reqBtlLtrMemMpng
+            , @AuthenticationPrincipal CustomOAuth2User customOAuth2User){
+
+        String usrSeqId = String.valueOf(customOAuth2User.getUsrSeqId());
+        reqBtlLtrMemMpng.setReadSeqId(usrSeqId);
+
+
+        return bottleService.btlLtrJustFlow(reqBtlLtrMemMpng);
+    }
     /**
      * 유리병 디테일을 조회하는 컨트롤러
      * @param reqBottleLtrDetialDTO
