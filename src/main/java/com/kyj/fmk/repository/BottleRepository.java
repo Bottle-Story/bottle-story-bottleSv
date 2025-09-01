@@ -1,6 +1,8 @@
 package com.kyj.fmk.repository;
 
 import com.kyj.fmk.model.ReqBottleLtrDTO;
+import com.kyj.fmk.model.ReqBottleLtrDetialDTO;
+import com.kyj.fmk.model.ResBottleLtrDetail;
 
 import java.util.List;
 
@@ -12,6 +14,8 @@ import java.util.List;
 public interface BottleRepository {
     public void insertBtlLtr(ReqBottleLtrDTO reqBottleLtrDTO);
     public List<String> selectExcludeBtlList (List<String> returnList,String usrSeqId);
+    public ResBottleLtrDetail selectBtlLtrDetail(ReqBottleLtrDetialDTO reqBottleLtrDetialDTO);
+
 
 
 }

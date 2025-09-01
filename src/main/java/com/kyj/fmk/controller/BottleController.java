@@ -2,16 +2,15 @@ package com.kyj.fmk.controller;
 
 import com.kyj.fmk.core.model.dto.ResApiDTO;
 import com.kyj.fmk.model.ReqBottleLtrDTO;
+import com.kyj.fmk.model.ReqBottleLtrDetialDTO;
+import com.kyj.fmk.model.ResBottleLtrDetail;
 import com.kyj.fmk.sec.dto.oauth2.CustomOAuth2User;
 import com.kyj.fmk.service.BottleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -43,5 +42,16 @@ public class BottleController {
 
 
         return bottleService.insertBtlLtr(reqBottleLtrDTO);
+    }
+
+    /**
+     * 유리병 디테일을 조회하는 컨트롤러
+     * @param reqBottleLtrDetialDTO
+     * @return
+     */
+    @GetMapping("/letter/detail")
+    public ResponseEntity<ResApiDTO<ResBottleLtrDetail>> selectBtlLtrDetail( @ModelAttribute ReqBottleLtrDetialDTO reqBottleLtrDetialDTO){
+        log.info("asdsads={}",reqBottleLtrDetialDTO.getBtlLtrNo());
+        return bottleService.selectBtlLtrDetail(reqBottleLtrDetialDTO);
     }
 }
