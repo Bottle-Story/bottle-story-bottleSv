@@ -4,6 +4,7 @@ import com.kyj.fmk.mapper.BottleMapper;
 import com.kyj.fmk.model.ReqBottleLtrDTO;
 import com.kyj.fmk.model.ReqBottleLtrDetialDTO;
 import com.kyj.fmk.model.ResBottleLtrDetail;
+import com.kyj.fmk.model.kafka.ReqBtlLtrMemMpng;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -47,5 +48,14 @@ public class MybatisBottleRepository implements BottleRepository{
     @Override
     public void insertBtlLtr(ReqBottleLtrDTO reqBottleLtrDTO) {
         bottleMapper.insertBtlLtr(reqBottleLtrDTO);
+    }
+
+    /**
+     * 유리병 편지 조회시 조회이력 매핑 인서트
+     * @param reqBtlLtrMemMpng
+     */
+    @Override
+    public void insertBtlLtrMemMpng(ReqBtlLtrMemMpng reqBtlLtrMemMpng) {
+        bottleMapper.insertBtlLtrMemMpng(reqBtlLtrMemMpng);
     }
 }

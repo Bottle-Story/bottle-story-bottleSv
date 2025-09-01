@@ -3,7 +3,9 @@ package com.kyj.fmk.service;
 import com.kyj.fmk.core.model.dto.ResApiDTO;
 import com.kyj.fmk.model.ReqBottleLtrDTO;
 import com.kyj.fmk.model.ReqBottleLtrDetialDTO;
+import com.kyj.fmk.model.ReqMoveBtlLtrGeoDTO;
 import com.kyj.fmk.model.ResBottleLtrDetail;
+import com.kyj.fmk.model.kafka.ReqBtlLtrMemMpng;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -20,4 +22,6 @@ public interface BottleService {
     public List<String> selectBtlRangeByMem(String usrSeqId);
     public List<String> selectMemRangeByBtl(String btlLtrNo);
     public ResponseEntity<ResApiDTO<ResBottleLtrDetail>> selectBtlLtrDetail(ReqBottleLtrDetialDTO reqBottleLtrDetialDTO);
+    public void moveBtlLtrGeo(ReqMoveBtlLtrGeoDTO reqMoveBtlLtrGeoDTO);
+    public ResponseEntity<ResApiDTO<?>> btlLtrJustFlow(ReqBtlLtrMemMpng reqBtlLtrMemMpng);
 }

@@ -1,11 +1,16 @@
 package com.kyj.fmk.service;
 
+import com.kyj.fmk.core.exception.custom.KyjSysException;
 import com.kyj.fmk.core.model.dto.ResApiDTO;
+import com.kyj.fmk.core.model.enm.CmErrCode;
 import com.kyj.fmk.core.redis.RedisKey;
+import com.kyj.fmk.core.util.GeoUtil;
 import com.kyj.fmk.model.ReqBottleLtrDTO;
 import com.kyj.fmk.model.ReqBottleLtrDetialDTO;
+import com.kyj.fmk.model.ReqMoveBtlLtrGeoDTO;
 import com.kyj.fmk.model.ResBottleLtrDetail;
 import com.kyj.fmk.model.kafka.KafkaBtlFlowDTO;
+import com.kyj.fmk.model.kafka.ReqBtlLtrMemMpng;
 import com.kyj.fmk.queue.KafkaBtlPublishService;
 import com.kyj.fmk.repository.BottleRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +22,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.domain.geo.Metrics;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -84,6 +90,8 @@ public class BottleServiceImpl implements BottleService{
                 .ok(new ResApiDTO<ResBottleLtrDetail>(resBottleLtrDetail));
     }
 
+
+
     /**
      * 유리병 편지 기준 회원 리스트 조회
      * @param btlLtrNo
@@ -113,7 +121,32 @@ public class BottleServiceImpl implements BottleService{
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 유리병 편지 좌표 랜덤 이동
+     * @param reqMoveBtlLtrGeoDTO
+     */
+    @Override
+    public void moveBtlLtrGeo(ReqMoveBtlLtrGeoDTO reqMoveBtlLtrGeoDTO) {
 
+        List<Point> points = redisTemplate.opsForGeo().position(RedisKey.GEO_BOTTLE, reqMoveBtlLtrGeoDTO.getBtlLtrNo());
+        Point newPoint = null;
+
+        if (points != null && !points.isEmpty()) {
+            Point p = points.get(0);
+            newPoint=  GeoUtil.randomizeLocationWithinKorea(p.getY(),p.getX(),10);
+
+            redisTemplate.opsForGeo().add(
+                    RedisKey.GEO_BOTTLE,
+                    new org.springframework.data.redis.connection.RedisGeoCommands.GeoLocation<>(
+                            reqMoveBtlLtrGeoDTO.getBtlLtrNo(), // bottleid
+                            newPoint
+                    )
+            );
+        } else {
+            throw new KyjSysException(CmErrCode.CM004);
+        }
+
+    }
 
     /**
      * 유리병 편지를 작성하는 서비스
@@ -138,6 +171,31 @@ public class BottleServiceImpl implements BottleService{
 
         KafkaBtlFlowDTO kafkaBtlFlowDTO = new KafkaBtlFlowDTO(reqBottleLtrDTO.getBtlLtrNo());
 
+        kafkaBtlPublishService.publishBottleFlow(kafkaBtlFlowDTO);
+
+        return ResponseEntity
+                .ok(new ResApiDTO<>(null));
+    }
+
+    /**
+     * 유리병 편지 그냥 흘려보내기(조회이력 인서트, 좌표이동, 카프카 전송)
+     * @param reqBtlLtrMemMpng
+     * @return
+     */
+    @Override
+    @Transactional
+    public ResponseEntity<ResApiDTO<?>> btlLtrJustFlow(ReqBtlLtrMemMpng reqBtlLtrMemMpng) {
+
+        //이력 인서트
+        bottleRepository.insertBtlLtrMemMpng(reqBtlLtrMemMpng);
+
+        ReqMoveBtlLtrGeoDTO reqMoveBtlLtrGeoDTO = new ReqMoveBtlLtrGeoDTO();
+        reqMoveBtlLtrGeoDTO.setBtlLtrNo(reqBtlLtrMemMpng.getBtlLtrNo());
+        //좌표이동
+        this.moveBtlLtrGeo(reqMoveBtlLtrGeoDTO);
+
+        //유리병 조회 푸시를 위한 카프카  큐 전송
+        KafkaBtlFlowDTO kafkaBtlFlowDTO = new KafkaBtlFlowDTO(reqBtlLtrMemMpng.getBtlLtrNo());
         kafkaBtlPublishService.publishBottleFlow(kafkaBtlFlowDTO);
 
         return ResponseEntity
