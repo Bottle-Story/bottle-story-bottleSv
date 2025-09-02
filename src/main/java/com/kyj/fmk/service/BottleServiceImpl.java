@@ -7,6 +7,7 @@ import com.kyj.fmk.core.redis.RedisKey;
 import com.kyj.fmk.core.util.GeoUtil;
 import com.kyj.fmk.model.*;
 import com.kyj.fmk.model.kafka.KafkaBtlFlowDTO;
+import com.kyj.fmk.model.kafka.KafkaBtlRpyDTO;
 import com.kyj.fmk.model.kafka.ReqBtlLtrMemMpng;
 import com.kyj.fmk.queue.KafkaBtlPublishService;
 import com.kyj.fmk.repository.BottleRepository;
@@ -58,7 +59,10 @@ public class BottleServiceImpl implements BottleService{
 
 
         //카프카 큐 전송
+        char[] contentArr = reqBottleRpyDTO.getBtlRpyContent().toCharArray();
+        KafkaBtlRpyDTO kafkaBtlRpyDTO = new KafkaBtlRpyDTO(reqBottleRpyDTO.getBtlLtrNo(), contentArr);
 
+        kafkaBtlPublishService.publishBottleReply(kafkaBtlRpyDTO);
 
         return ResponseEntity.ok(new ResApiDTO<>());
     }

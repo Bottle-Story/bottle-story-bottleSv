@@ -7,6 +7,8 @@ import com.kyj.fmk.core.exception.custom.KyjSysException;
 import com.kyj.fmk.core.model.enm.CmErrCode;
 import com.kyj.fmk.model.kafka.KafkaBtlFlowDTO;
 import com.kyj.fmk.model.kafka.KafkaBtlFlowReDTO;
+import com.kyj.fmk.model.kafka.KafkaBtlRpyDTO;
+import com.kyj.fmk.repository.BottleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,34 @@ public class KafkaBtlPublishServiceImpl implements KafkaBtlPublishService {
 
     private final KafkaTemplate<String,String> kafkaTemplate;
     private final ObjectMapper objectMapper;
+    private final BottleRepository bottleRepository;
+
+    /**
+     * 유리병 댓글 작성 시 카프카 이벤트 발행
+     * @param kafkaBtlRpyDTO
+     */
+    @Override
+    public void publishBottleReply(KafkaBtlRpyDTO kafkaBtlRpyDTO) {
+
+        String data  = null;
+        String reciever = bottleRepository.selectRecieverByBtlRpy(kafkaBtlRpyDTO.getBtlLtrNo());
+        kafkaBtlRpyDTO.setUsrSeqId(reciever);
+
+        try {
+
+            data = objectMapper.writeValueAsString(kafkaBtlRpyDTO);
+
+        } catch (JsonProcessingException e) {
+            throw new KyjSysException(CmErrCode.CM016);
+        }
+
+        if(data == null){
+            throw new KyjBizException(CmErrCode.CM019);
+
+        }
+        kafkaTemplate.send(kafkaBtlRpyDTO.getTopic(),data);
+    }
+
     /**
      * 유라병 작성 시 카프카 이벤트 발행  2
      * @param

@@ -61,6 +61,16 @@ public class MybatisBottleRepository implements BottleRepository{
     }
 
     /**
+     * 유리병 답글 작성 시 작성자 조회
+     * @param btlLtrNo
+     * @return
+     */
+    @Override
+    public String selectRecieverByBtlRpy(String btlLtrNo) {
+        return bottleMapper.selectRecieverByBtlRpy(btlLtrNo);
+    }
+
+    /**
      * 유리병 편지 조회시 조회이력 매핑 인서트
      * @param reqBtlLtrMemMpng
      */

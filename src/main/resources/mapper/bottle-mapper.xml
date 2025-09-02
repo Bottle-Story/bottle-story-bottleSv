@@ -114,4 +114,11 @@
         , #{senderSeqId}
         )
     </insert>
+    
+    <select id="selectRecieverByBtlRpy" parameterType="String" resultType="String">
+        SELECT REG_SEQ_ID
+          FROM BTL_LTR
+         WHERE 1=1
+           AND BTL_LTR_NO = #{btlLtrNo}
+    </select>
 </mapper>

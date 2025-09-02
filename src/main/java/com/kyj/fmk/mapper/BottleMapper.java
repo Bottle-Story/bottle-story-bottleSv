@@ -21,4 +21,5 @@ public interface BottleMapper {
     public ResBottleLtrDetail selectBtlLtrDetail(ReqBottleLtrDetialDTO reqBottleLtrDetialDTO);
     public void insertBtlLtrMemMpng(ReqBtlLtrMemMpng reqBtlLtrMemMpng);
     public void insertBtlRpy(ReqBottleRpyDTO reqBottleRpyDTO);
+    public String selectRecieverByBtlRpy(String btlLtrNo);
 }

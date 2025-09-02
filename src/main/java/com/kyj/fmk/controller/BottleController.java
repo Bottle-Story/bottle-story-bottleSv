@@ -68,14 +68,18 @@ public class BottleController {
     }
 
 
-
+    /**
+     * 유리병 편지 답글
+     * @param reqBottleLtrDTO
+     * @param customOAuth2User
+     * @return
+     */
     @PostMapping("/reply")
     public ResponseEntity<ResApiDTO<?>> bottleLtrRpyInsert(@RequestBody ReqBottleRpyDTO reqBottleLtrDTO
             , @AuthenticationPrincipal CustomOAuth2User customOAuth2User){
 
         String usrSeqId = String.valueOf(customOAuth2User.getUsrSeqId());
         reqBottleLtrDTO.setSenderSeqId(usrSeqId);
-
 
         return bottleService.insertBtlRpy(reqBottleLtrDTO);
     }
