@@ -5,16 +5,12 @@ import com.kyj.fmk.core.model.dto.ResApiDTO;
 import com.kyj.fmk.core.model.enm.CmErrCode;
 import com.kyj.fmk.core.redis.RedisKey;
 import com.kyj.fmk.core.util.GeoUtil;
-import com.kyj.fmk.model.ReqBottleLtrDTO;
-import com.kyj.fmk.model.ReqBottleLtrDetialDTO;
-import com.kyj.fmk.model.ReqMoveBtlLtrGeoDTO;
-import com.kyj.fmk.model.ResBottleLtrDetail;
+import com.kyj.fmk.model.*;
 import com.kyj.fmk.model.kafka.KafkaBtlFlowDTO;
 import com.kyj.fmk.model.kafka.ReqBtlLtrMemMpng;
 import com.kyj.fmk.queue.KafkaBtlPublishService;
 import com.kyj.fmk.repository.BottleRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.geo.Circle;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Point;
@@ -41,6 +37,31 @@ public class BottleServiceImpl implements BottleService{
     private final RedisTemplate<String,Object> redisTemplate;
     private final KafkaBtlPublishService kafkaBtlPublishService;
     private static final double SEARCH_RADIUS_METERS = 10000; // 10km
+
+    /**
+     * 유리병 편지 답변글귀 작성
+     * @param reqBottleRpyDTO
+     * @return
+     */
+    @Override
+    @Transactional
+    public ResponseEntity<ResApiDTO<?>> insertBtlRpy(ReqBottleRpyDTO reqBottleRpyDTO) {
+        //답변 테이블 인서트
+        bottleRepository.insertBtlRpy(reqBottleRpyDTO);
+
+        ReqBtlLtrMemMpng reqBtlLtrMemMpng = new ReqBtlLtrMemMpng();
+        reqBtlLtrMemMpng.setReadSeqId(reqBottleRpyDTO.getSenderSeqId());
+        reqBtlLtrMemMpng.setBtlLtrNo(reqBottleRpyDTO.getBtlLtrNo());
+
+        //이력 인서트
+        bottleRepository.insertBtlLtrMemMpng(reqBtlLtrMemMpng);
+
+
+        //카프카 큐 전송
+
+
+        return ResponseEntity.ok(new ResApiDTO<>());
+    }
 
     /**
      * 회원 기준 유리병 편지 리스트 조회

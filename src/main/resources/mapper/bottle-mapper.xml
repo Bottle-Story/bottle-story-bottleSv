@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.kyj.fmk.mapper.BottleMapper">
-
     <insert id="insertBtlLtr" parameterType="ReqBottleLtrDTO" useGeneratedKeys="true" keyProperty="btlLtrNo">
+        /* 유리병 편지 마스터 인서트*/
         INSERT INTO BTL_LTR
         (
           BTL_TITLE
@@ -25,7 +25,9 @@
         , 'PROGRESS'
         )
     </insert>
+
     <select id="selectExcludeBtlList" parameterType="java.util.List" resultType="String">
+        /* 유리병 편지 제외리스트 조회*/
         SELECT BTL_LTR_NO
           FROM BTL_LTR
          WHERE 1=1
@@ -63,6 +65,7 @@
     </select>
 
     <select id="selectBtlLtrDetail" parameterType="ReqBottleLtrDetialDTO" resultType="ResBottleLtrDetail">
+        /* 유리병 편지 상세  */
         SELECT
                BTL_LTR_NO
              , BTL_TITLE   AS TITLE
@@ -75,6 +78,7 @@
 
 
     <insert id="insertBtlLtrMemMpng" parameterType="ReqBtlLtrMemMpng" >
+        /* 유리병 편지 조회이력 매핑 인서트 */
         INSERT INTO BTL_LTR_MEM_MPNG
         (
           READ_SEQ_ID
@@ -88,6 +92,26 @@
         , #{btlLtrNo}
         , #{readSeqId}
         , #{readSeqId}
+        )
+    </insert>
+
+    <insert id="insertBtlRpy" parameterType="ReqBottleRpyDTO" >
+        /* 유리병 편지 조회이력 매핑 인서트 */
+        INSERT INTO BTL_LTR_REPLY
+        (
+          SENDER_SEQ_ID
+        , BTL_LTR_NO
+        , BTL_RPY_CONTENT
+        , REG_SEQ_ID
+        , UPD_SEQ_ID
+        )
+        VALUES
+        (
+          #{senderSeqId}
+        , #{btlLtrNo}
+        , #{btlRpyContent}
+        , #{senderSeqId}
+        , #{senderSeqId}
         )
     </insert>
 </mapper>

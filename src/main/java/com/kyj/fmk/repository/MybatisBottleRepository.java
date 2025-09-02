@@ -3,6 +3,7 @@ package com.kyj.fmk.repository;
 import com.kyj.fmk.mapper.BottleMapper;
 import com.kyj.fmk.model.ReqBottleLtrDTO;
 import com.kyj.fmk.model.ReqBottleLtrDetialDTO;
+import com.kyj.fmk.model.ReqBottleRpyDTO;
 import com.kyj.fmk.model.ResBottleLtrDetail;
 import com.kyj.fmk.model.kafka.ReqBtlLtrMemMpng;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,15 @@ public class MybatisBottleRepository implements BottleRepository{
     @Override
     public void insertBtlLtr(ReqBottleLtrDTO reqBottleLtrDTO) {
         bottleMapper.insertBtlLtr(reqBottleLtrDTO);
+    }
+
+    /**
+     * 유리병 편지 답변글귀 작성
+     * @param reqBottleRpyDTO
+     */
+    @Override
+    public void insertBtlRpy(ReqBottleRpyDTO reqBottleRpyDTO) {
+        bottleMapper.insertBtlRpy(reqBottleRpyDTO);
     }
 
     /**

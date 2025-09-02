@@ -1,9 +1,7 @@
 package com.kyj.fmk.controller;
 
 import com.kyj.fmk.core.model.dto.ResApiDTO;
-import com.kyj.fmk.model.ReqBottleLtrDTO;
-import com.kyj.fmk.model.ReqBottleLtrDetialDTO;
-import com.kyj.fmk.model.ResBottleLtrDetail;
+import com.kyj.fmk.model.*;
 import com.kyj.fmk.model.kafka.ReqBtlLtrMemMpng;
 import com.kyj.fmk.sec.dto.oauth2.CustomOAuth2User;
 import com.kyj.fmk.service.BottleService;
@@ -13,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +28,29 @@ public class BottleController {
     private final BottleService bottleService;
 
     /**
+     * 루트 진입 시 유리병 조회
+     * @param customOAuth2User
+     * @return
+     */
+    @GetMapping("/letter")
+    public ResponseEntity<ResApiDTO<?>> selectBottleLtr(@AuthenticationPrincipal CustomOAuth2User customOAuth2User){
+
+        String usrSeqId = String.valueOf(customOAuth2User.getUsrSeqId());
+
+        List<String> list = bottleService.selectBtlRangeByMem(usrSeqId);
+        List<ResBtlIdDTO> result = new ArrayList<>();
+
+        for (String id: list){
+            ResBtlIdDTO resBtlIdDTO = new ResBtlIdDTO();
+            resBtlIdDTO.setId(id);
+
+            result.add(resBtlIdDTO);
+        }
+        ResApiDTO<List<ResBtlIdDTO>> res = new ResApiDTO<>(result);
+
+        return ResponseEntity.ok(res);
+    }
+    /**
      * 유리병 편지를 작성하는 컨트롤러
      * @param reqBottleLtrDTO
      * @param customOAuth2User
@@ -43,6 +65,19 @@ public class BottleController {
 
 
         return bottleService.insertBtlLtr(reqBottleLtrDTO);
+    }
+
+
+
+    @PostMapping("/reply")
+    public ResponseEntity<ResApiDTO<?>> bottleLtrRpyInsert(@RequestBody ReqBottleRpyDTO reqBottleLtrDTO
+            , @AuthenticationPrincipal CustomOAuth2User customOAuth2User){
+
+        String usrSeqId = String.valueOf(customOAuth2User.getUsrSeqId());
+        reqBottleLtrDTO.setSenderSeqId(usrSeqId);
+
+
+        return bottleService.insertBtlRpy(reqBottleLtrDTO);
     }
 
     /**
