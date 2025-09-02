@@ -2,6 +2,7 @@ package com.kyj.fmk.mapper;
 
 import com.kyj.fmk.model.ReqBottleLtrDTO;
 import com.kyj.fmk.model.ReqBottleLtrDetialDTO;
+import com.kyj.fmk.model.ReqBottleRpyDTO;
 import com.kyj.fmk.model.ResBottleLtrDetail;
 import com.kyj.fmk.model.kafka.ReqBtlLtrMemMpng;
 import org.apache.ibatis.annotations.Mapper;
@@ -19,4 +20,5 @@ public interface BottleMapper {
     public List<String> selectExcludeBtlList (List<String> returnList,String usrSeqId);
     public ResBottleLtrDetail selectBtlLtrDetail(ReqBottleLtrDetialDTO reqBottleLtrDetialDTO);
     public void insertBtlLtrMemMpng(ReqBtlLtrMemMpng reqBtlLtrMemMpng);
+    public void insertBtlRpy(ReqBottleRpyDTO reqBottleRpyDTO);
 }

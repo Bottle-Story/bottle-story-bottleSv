@@ -2,6 +2,7 @@ package com.kyj.fmk.repository;
 
 import com.kyj.fmk.model.ReqBottleLtrDTO;
 import com.kyj.fmk.model.ReqBottleLtrDetialDTO;
+import com.kyj.fmk.model.ReqBottleRpyDTO;
 import com.kyj.fmk.model.ResBottleLtrDetail;
 import com.kyj.fmk.model.kafka.ReqBtlLtrMemMpng;
 
@@ -17,6 +18,7 @@ public interface BottleRepository {
     public List<String> selectExcludeBtlList (List<String> returnList,String usrSeqId);
     public ResBottleLtrDetail selectBtlLtrDetail(ReqBottleLtrDetialDTO reqBottleLtrDetialDTO);
     public void insertBtlLtrMemMpng(ReqBtlLtrMemMpng reqBtlLtrMemMpng);
+    public void insertBtlRpy(ReqBottleRpyDTO reqBottleRpyDTO);
 
 
 
